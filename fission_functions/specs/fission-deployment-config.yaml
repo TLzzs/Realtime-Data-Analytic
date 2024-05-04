@@ -3,5 +3,5 @@
 # Do not edit the UID below: that will break 'fission spec apply'
 apiVersion: fission.io/v1
 kind: DeploymentConfig
-name: fissionfunctions
-uid: 01f8c737-ad14-4f51-bb66-28e293b990ea
+name: fission-functions
+uid: 04788384-40d8-492b-abfb-8f8c4558e3e4

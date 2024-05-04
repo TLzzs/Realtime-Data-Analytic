@@ -1,0 +1,11 @@
+apiVersion: fission.io/v1
+kind: TimeTrigger
+metadata:
+  creationTimestamp: null
+  name: air-quality-ingest
+spec:
+  cron: '@every 60m'
+  functionref:
+    functionweights: null
+    name: airextract
+    type: name
