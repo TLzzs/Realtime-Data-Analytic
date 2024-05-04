@@ -1,4 +1,3 @@
-from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, current_app
 import requests
 
