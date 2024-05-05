@@ -27,6 +27,7 @@ jobs:
     - name: Install dependencies from all requirements.txt files
       run: |
         find . -name 'requirements.txt' -exec pip install -r {} \;
+        pip install pylint
 
     - name: Run Pylint on all Python files
       run: |
