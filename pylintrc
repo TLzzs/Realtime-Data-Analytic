@@ -395,6 +395,12 @@ logging-modules=logging
 
 [MESSAGES CONTROL]
 
+disable=
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring
+
+
 # Only show warnings with the listed confidence levels. Leave empty to show
 # all. Valid levels: HIGH, CONTROL_FLOW, INFERENCE, INFERENCE_FAILURE,
 # UNDEFINED.
@@ -621,15 +627,3 @@ init-import=no
 # List of qualified module names which can have objects that can redefine
 # builtins.
 redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
-
-
-[MASTER]
-# A list of files or directories to be skipped. You might want to skip virtual environment directories, for instance.
-ignore=venv
-
-[MESSAGES CONTROL]
-# Disable specific checks. Add any checks here that you want Pylint to ignore.
-disable=
-    missing-module-docstring,
-    missing-function-docstring,
-    missing-class-docstring
