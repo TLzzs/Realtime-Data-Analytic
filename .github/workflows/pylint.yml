@@ -30,4 +30,4 @@ jobs:
 
     - name: Run Pylint on all Python files
       run: |
-        find . -name '*.py' | xargs pylint
+        pylint $(git ls-files '*.py')
