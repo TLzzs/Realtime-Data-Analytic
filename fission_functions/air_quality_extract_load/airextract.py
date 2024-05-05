@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
-from flask import Flask, jsonify, current_app
+from flask import jsonify, current_app
 import requests
+from requests.exceptions import HTTPError, Timeout, RequestException
 
 
 def normalize_coordinates(coords):
@@ -29,21 +30,24 @@ def main():
         "environmentalSegment": "air"
     }
 
-    response = requests.get(url, headers=headers, params=params)
-
-    current_app.logger.info(f'Status ES request: {response.status_code}')
-
-    total_records = None
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=60)
+        response.raise_for_status()
         json_response = response.json()
-
         total_records = json_response['records']
         current_app.logger.info(f'Total Records: {total_records}')
-
-    else:
-        print("Response Body:", response.content)
-        current_app.logger.error(f'Error fetching data. Status code: {response.status_code}')
-        return jsonify({'error': 'Failed to fetch data'}), 500
+    except HTTPError as http_err:
+        current_app.logger.error(f'HTTP error occurred: {http_err}')
+        return jsonify({'error': 'HTTP error occurred', 'details': str(http_err)}), 500
+    except Timeout:
+        current_app.logger.error('The request timed out')
+        return jsonify({'error': 'The request timed out'}), 408
+    except RequestException as req_err:
+        current_app.logger.error(f'Request error occurred: {req_err}')
+        return jsonify({'error': 'Network related error', 'details': str(req_err)}), 500
+    except ValueError:
+        current_app.logger.error('Invalid response from API')
+        return jsonify({'error': 'Invalid JSON response'}), 500
 
     client = Elasticsearch(
         'https://elasticsearch-master.elastic.svc.cluster.local:9200',
@@ -56,11 +60,12 @@ def main():
     try:
         if isinstance(total_records, list):
             for record in total_records:
-                record["geometry"]["coordinates"] = normalize_coordinates(record["geometry"]["coordinates"])
-                current_app.logger.info(f'inserting records: {record}')
+                coordinates = record["geometry"]["coordinates"]
+                record["geometry"]["coordinates"] = normalize_coordinates(coordinates)
                 result = client.index(index=index_name, document=record)
                 current_app.logger.info(f'Data indexed with ID: {result["_id"]}')
     except Exception as e:
-        current_app.logger.error(f'Failed to index data: {str(e)}')
+        current_app.logger.error(f'Unexpected error occurred: {str(e)}')
+        return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500
 
-    return jsonify({'load success': 'Success to fetch data and load to ES'}), 200
+    return jsonify({'load success': 'Successfully fetched data and loaded to Elasticsearch'}), 200

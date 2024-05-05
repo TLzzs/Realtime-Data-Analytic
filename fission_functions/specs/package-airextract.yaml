@@ -1,7 +1,7 @@
 include:
 - ./airextract.zip
 kind: ArchiveUploadSpec
-name: airextract-zip-xV08
+name: airextract-zip-Cv3P
 
 ---
 apiVersion: fission.io/v1
@@ -19,7 +19,7 @@ spec:
   source:
     checksum: {}
     type: url
-    url: archive://airextract-zip-xV08
+    url: archive://airextract-zip-Cv3P
 status:
   buildstatus: pending
-  lastUpdateTimestamp: "2024-05-04T13:17:31Z"
+  lastUpdateTimestamp: "2024-05-05T07:50:20Z"
