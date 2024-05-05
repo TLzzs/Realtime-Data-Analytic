@@ -16,8 +16,8 @@ spec:
   environment:
     name: python
     namespace: ""
-  functionTimeout: 60
-  idletimeout: 120
+  functionTimeout: 300
+  idletimeout: 300
   package:
     functionName: airextract.main
     packageref:
