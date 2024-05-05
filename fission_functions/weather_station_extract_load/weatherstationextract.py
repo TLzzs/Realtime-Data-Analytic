@@ -2,13 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from flask import jsonify, current_app, Flask
+from flask import jsonify, current_app
 
 
 def get_station_data(state):
     """ Fetches station data for a given state from BOM website. """
     url = f'https://reg.bom.gov.au/{state}/observations/{state}all.shtml'
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     if response.status_code != 200:
         current_app.logger.error(f"Failed to retrieve data for URL: {url}")
         return []
