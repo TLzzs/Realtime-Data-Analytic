@@ -395,10 +395,7 @@ logging-modules=logging
 
 [MESSAGES CONTROL]
 
-disable=
-    missing-module-docstring,
-    missing-function-docstring,
-    missing-class-docstring
+
 
 
 # Only show warnings with the listed confidence levels. Leave empty to show
@@ -426,7 +423,10 @@ disable=raw-checker-failed,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        missing-module-docstring,
+        missing-function-docstring,
+        missing-class-docstring
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

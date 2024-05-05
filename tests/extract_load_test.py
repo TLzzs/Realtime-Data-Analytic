@@ -1,6 +1,6 @@
 import unittest
-from flask import Flask
 from unittest.mock import patch, MagicMock
+from flask import Flask
 from fission_functions.air_quality_extract_load.airextract import main
 
 app = Flask(__name__)
