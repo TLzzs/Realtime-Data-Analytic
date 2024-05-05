@@ -19,7 +19,7 @@ def main():
         "environmentalSegment": "air"
     }
 
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=params, timeout=60)
 
     current_app.logger.info(f'Status ES request: {response.status_code}')
 
