@@ -32,7 +32,7 @@ def main():
 
     try:
         response = requests.get(url, headers=headers, params=params, timeout=60)
-        response.raise_for_status()  # Raises HTTPError for bad responses
+        response.raise_for_status()
         json_response = response.json()
         total_records = json_response['records']
         current_app.logger.info(f'Total Records: {total_records}')

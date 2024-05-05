@@ -19,7 +19,7 @@ spec:
   functionTimeout: 60
   idletimeout: 120
   package:
-    functionName: "airextract.main"
+    functionName: airextract.main
     packageref:
       name: airextract
       namespace: ""
