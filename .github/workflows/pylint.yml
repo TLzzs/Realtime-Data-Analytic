@@ -28,6 +28,7 @@ jobs:
       run: |
         find . -name 'requirements.txt' -exec pip install -r {} \;
         pip install pylint
+        pip install Flask requests
 
     - name: Run Pylint on all Python files
       run: |
