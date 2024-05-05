@@ -52,4 +52,4 @@ jobs:
 
       - name: Run Tests
         run: |
-          python -m unittest tests/extract_load_test.py
+          python -m unittest discover -s tests -p "Test*.py"
