@@ -623,7 +623,13 @@ init-import=no
 redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
 
 
+[MASTER]
+# A list of files or directories to be skipped. You might want to skip virtual environment directories, for instance.
+ignore=venv
+
 [MESSAGES CONTROL]
+# Disable specific checks. Add any checks here that you want Pylint to ignore.
 disable=
     missing-module-docstring,
-    missing-function-docstring
+    missing-function-docstring,
+    missing-class-docstring
