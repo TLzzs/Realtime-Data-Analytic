@@ -1,9 +1,20 @@
+"""This module contains functions for extracting air quality data and loading it into Elasticsearch."""
+
 from elasticsearch import Elasticsearch
-from flask import Flask, jsonify, current_app
+from flask import jsonify, current_app
 import requests
 
 
 def normalize_coordinates(coords):
+    """
+        Normalize coordinates to be within the geographical bounds (-90, 90).
+
+        Args:
+            coords (list): List of coordinate values.
+
+        Returns:
+            list: Normalized list of coordinates.
+    """
     normalized_coords = []
     for coord in coords:
         if coord > 90:
@@ -56,7 +67,8 @@ def main():
     try:
         if isinstance(total_records, list):
             for record in total_records:
-                record["geometry"]["coordinates"] = normalize_coordinates(record["geometry"]["coordinates"])
+                coordinates = record["geometry"]["coordinates"]
+                record["geometry"]["coordinates"] = normalize_coordinates(coordinates)
                 current_app.logger.info(f'inserting records: {record}')
                 result = client.index(index=index_name, document=record)
                 current_app.logger.info(f'Data indexed with ID: {result["_id"]}')

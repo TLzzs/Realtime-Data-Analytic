@@ -1,7 +1,7 @@
 import unittest
-from flask import Flask, current_app
+from flask import Flask
 from unittest.mock import patch, MagicMock
-from fission_functions.air_quality_extract_load.airextract import normalize_coordinates, main
+from fission_functions.air_quality_extract_load.airextract import main
 
 app = Flask(__name__)
 
