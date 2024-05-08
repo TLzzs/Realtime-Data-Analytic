@@ -14,7 +14,6 @@ def create_es_client():
 
 def get_latest_record_time(client):
     """Retrieve the latest record's time from the Elasticsearch index."""
-    current_app.logger.info(f"Getting response of latest record time")
     query = {
         "size": 1,
         "sort": [{"local_date_time_full": {"order": "desc"}}],
@@ -30,8 +29,8 @@ def fetch_station_data(url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                       '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
     }
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raises an HTTPError for bad responses
+    response = requests.get(url, headers=headers, timeout=100)
+    response.raise_for_status()
     return response.json()['observations']['data']
 
 
@@ -39,8 +38,7 @@ def filter_new_records(records, latest_time):
     """Filter out records older than the latest time."""
     if latest_time is not None:
         return [record for record in records if record['local_date_time_full'] > latest_time]
-    else:
-        return records
+    return records
 
 
 def bulk_load_to_es(client, actions):
@@ -90,5 +88,4 @@ def main():
     success, count = bulk_load_to_es(client, actions)
     if success:
         return jsonify({"message": f"Successfully loaded {count} new weather data entries.", "count": count}), 200
-    else:
-        return jsonify({"message": "No new data to load or bulk operation failed.", "count": count}), 200
+    return jsonify({"message": "No new data to load or bulk operation failed.", "count": count}), 200
