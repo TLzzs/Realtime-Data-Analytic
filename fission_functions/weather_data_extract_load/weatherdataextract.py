@@ -12,15 +12,18 @@ def create_es_client():
     )
 
 
-def get_latest_record_time(client):
-    """Retrieve the latest record's time from the Elasticsearch index."""
+def get_latest_record_time(client, station_id):
+    """Retrieve the latest record's time from the Elasticsearch index for a specific station."""
     query = {
         "size": 1,
+        "query": {"term": {"station_id.keyword": station_id}},
         "sort": [{"local_date_time_full": {"order": "desc"}}],
         "_source": ["local_date_time_full"]
     }
     response = client.search(index="bom_weather_data", body=query)
-    return response['hits']['hits'][0]['_source']['local_date_time_full'] if response['hits']['hits'] else None
+    if response['hits']['hits']:
+        return response['hits']['hits'][0]['_source']['local_date_time_full']
+    return None
 
 
 def fetch_station_data(url):
@@ -49,28 +52,37 @@ def bulk_load_to_es(client, actions):
     return False, 0
 
 
+def pre_processing(new_records, station_name, state, station_id):
+    """Prepare the record by adding station details and removing unnecessary keys."""
+    for record in new_records:
+        record['station_name'] = station_name
+        record['state'] = state
+        record['station_id'] = station_id
+        record.pop('sort_order', None)
+    return new_records
+
+
 def main():
     client = create_es_client()
-    latest_time = get_latest_record_time(client)
-    current_app.logger.info(f"current latest_time is {latest_time}")
     stations = client.search(index='bom_stations', body={"query": {"match_all": {}}}, size=1000)
 
     actions = []
     for station in stations['hits']['hits']:
+        station_detail = station['_source']
+        station_name = station_detail.get('station_name')
+        state = station_detail.get('state')
+        station_id = station_detail.get('station_id')
         try:
-            station_detail = station['_source']
+            latest_time = get_latest_record_time(client, station_id)
+            current_app.logger.info(f"station: {station_name} has latest time of {latest_time}")
+
             weather_data = fetch_station_data(station_detail['url'])
             new_records = filter_new_records(weather_data, latest_time)
 
             current_app.logger.info(f"new weather data from {station_detail.get('station_name')} "
                                     f"need to be loaded: {len(new_records)}")
 
-            for record in new_records:
-                record['station_name'] = station_detail.get('station_name')
-                record['state'] = station_detail.get('state')
-                record['station_id'] = station_detail.get('station_id')
-                record.pop('sort_order', None)
-
+            pre_processing(new_records, station_name, state, station_id)
             actions.extend({
                                "_index": "bom_weather_data",
                                "_source": record
