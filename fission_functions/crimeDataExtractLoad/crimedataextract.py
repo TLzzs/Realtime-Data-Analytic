@@ -1,6 +1,5 @@
-import requests
 from elasticsearch import Elasticsearch, helpers
-from flask import current_app, jsonify, request
+from flask import jsonify
 import json
 
 
@@ -36,9 +35,9 @@ def main():
     client = create_es_client()
 
     index_name = 'crime_records'
-    file_path = 'data/2019_processed_output.json'
+    file_path = './data/2019_processed_output.json'
 
     success, count = load_json_to_es(client, index_name, file_path)
     if success:
-        return jsonify({"message": f"Successfully loaded {count} new weather data entries.", "count": count}), 200
+        return jsonify({"message": f"Successfully loaded {count} new crime data entries.", "count": count}), 200
     return jsonify({"message": "No new data to load or bulk operation failed.", "count": count}), 200
