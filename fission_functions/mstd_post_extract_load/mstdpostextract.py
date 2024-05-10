@@ -10,8 +10,8 @@ def fetch_posts_with_hashtag(mastodon_url, access_token, hashtag, min_id):
     params = {'limit': 40, 'max_id': min_id} if min_id else {'limit': 40}
     all_posts = []
 
-    while True and len(all_posts) < 400:
-        response = requests.get(url, headers=headers, params=params)
+    while len(all_posts) < 400:
+        response = requests.get(url, headers=headers, params=params, timeout=100)
         if response.status_code == 200:
             data = response.json()
             all_posts.extend(data)
@@ -47,11 +47,11 @@ def get_min_id_from_es(client, hashtag):
     try:
         resp = client.search(index="mstd_social_tag_data", body=query)
         if resp['hits']['hits']:
-            current_app.logger.info(f"Get min ID: Records found for hashtag {hashtag}")
-            return resp['hits']['hits'][0]['_source']['id']
-        else:
-            current_app.logger.info(f"No existing records found for hashtag {hashtag}")
-            return None
+            id_ = resp['hits']['hits'][0]['_source']['id']
+            current_app.logger.info(f"Get min ID:{id_} Records found for hashtag{hashtag}")
+            return id_
+        current_app.logger.info(f"No existing records found for hashtag {hashtag}")
+        return None
     except Exception as e:
         current_app.logger.error(f"Error fetching min_id from ES for hashtag {hashtag}: {str(e)}")
         return None
