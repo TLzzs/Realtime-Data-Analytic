@@ -52,19 +52,54 @@ def bulk_load_to_es(client, actions):
     return False, 0
 
 
+def fetch_station_details(station_name, without_suffix=True):
+    """Fetches station details from the API based on the station name."""
+    url = "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-australia-state-suburb/records"
+    refined_name = station_name if without_suffix else f"{station_name} (Vic.)"
+    params = {
+        "limit": 1,
+        "refine": f"scc_name:{refined_name}"
+    }
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        raise Exception(f"API request failed with status code {response.status_code}")
+    data = response.json()
+    if data['total_count'] == 1:
+        current_app.logger.info("Find the Mapping from suburb api")
+        result = data["results"][0]
+        return {
+            'geo_point': result['geo_point_2d'],
+            'lga_code': result['lga_code'],
+            'lga_name': result['lga_name']
+        }
+    elif without_suffix:
+        return fetch_station_details(station_name, without_suffix=False)
+    current_app.logger.info(f"Nothing find For station {station_name}, leave it as null")
+    return {'geo_point': None, 'lga_code': None, 'lga_name': None}
+
+
 def pre_processing(new_records, station_name, state, station_id):
-    """Prepare the record by adding station details and removing unnecessary keys."""
+    """Prepares the record by adding station details and removing unnecessary keys."""
+    station_details = fetch_station_details(station_name)
+
+    processed_records = []
     for record in new_records:
-        record['station_name'] = station_name
-        record['state'] = state
-        record['station_id'] = station_id
         record.pop('sort_order', None)
-    return new_records
+        record.update({
+            'station_name': station_name,
+            'state': state,
+            'station_id': station_id,
+            **station_details
+        })
+        processed_records.append(record)
+
+    return processed_records
 
 
 def main():
     client = create_es_client()
-    stations = client.search(index='bom_stations', body={"query": {"match_all": {}}}, size=1000)
+    stations = client.search(index='bom_stations', body={"query": {"match": {"state": "vic"}}}, size=1000)
+    current_app.logger.info(f"get {len(stations['hits']['hits'])} stations from bom_station")
 
     actions = []
     for station in stations['hits']['hits']:
