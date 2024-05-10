@@ -60,7 +60,7 @@ def fetch_station_details(station_name, without_suffix=True):
         "limit": 1,
         "refine": f"scc_name:{refined_name}"
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=100)
     if response.status_code != 200:
         raise Exception(f"API request failed with status code {response.status_code}")
     data = response.json()
@@ -72,7 +72,7 @@ def fetch_station_details(station_name, without_suffix=True):
             'lga_code': result['lga_code'],
             'lga_name': result['lga_name']
         }
-    elif without_suffix:
+    if without_suffix:
         return fetch_station_details(station_name, without_suffix=False)
     current_app.logger.info(f"Nothing find For station {station_name}, leave it as null")
     return {'geo_point': None, 'lga_code': None, 'lga_name': None}
