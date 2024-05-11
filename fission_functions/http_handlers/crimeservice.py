@@ -1,14 +1,19 @@
 from elasticsearch import Elasticsearch
 
+
 class CrimeService:
+    client = Elasticsearch(
+        'https://elasticsearch-master.elastic.svc.cluster.local:9200',
+        verify_certs=False,
+        basic_auth=('elastic', 'elastic')
+    )
+
+    @staticmethod
+    def place_holder():
+        return
 
     @staticmethod
     def get_crime_by_suburb(suburb_name):
-        client = Elasticsearch(
-            'https://elasticsearch-master.elastic.svc.cluster.local:9200',
-            verify_certs=False,
-            basic_auth=('elastic', 'elastic')
-        )
         query = {
             "query": {
                 "match": {
@@ -16,7 +21,7 @@ class CrimeService:
                 }
             }
         }
-        result = client.search(index="crime_test", body=query)
+        result = CrimeService.client.search(index="crime_test", body=query)
         crime = result["hits"]["hits"][0]['_source']
         total_a_offences = crime["total_division_a_offences"]
         total_b_offences = crime["total_division_b_offences"]
@@ -27,7 +32,9 @@ class CrimeService:
 
         res = {
             "suburb_name": crime["suburb_name"],
-            "total_offences": sum([total_a_offences,total_b_offences,total_c_offences,total_d_offences,total_e_offences,total_f_offences]),
+            "total_offences": sum(
+                [total_a_offences, total_b_offences, total_c_offences, total_d_offences, total_e_offences,
+                 total_f_offences]),
             "total_a_offences": total_a_offences,
             "total_d_offences": total_d_offences
         }
