@@ -10,7 +10,7 @@ class CrimeService:
 
     @staticmethod
     def place_holder():
-        return
+        return "place holder"
 
     @staticmethod
     def get_crime_by_suburb(suburb_name):

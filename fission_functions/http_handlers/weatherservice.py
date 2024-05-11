@@ -11,7 +11,7 @@ class WeatherService:
     @staticmethod
     def get_all_weather():
         WeatherService.client.get_script_languages()
-        return
+        return "placeholder"
 
     @staticmethod
     def get_weather_by_suburb(suburb_name):
