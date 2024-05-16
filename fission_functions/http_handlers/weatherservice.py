@@ -40,10 +40,8 @@ class WeatherService:
 
         result = WeatherService.client.search(index=WeatherService.index_name, body=query)
         res = {
-
             "average_temp": result["aggregations"]["average_temp"]["value"]
         }
-
         return res
 
     @staticmethod
@@ -59,7 +57,7 @@ class WeatherService:
                         },
                         {
                             "term": {
-                                "lga_code": 20110
+                                "lga_code": lga_code
                             }
                         }
                     ]
@@ -77,10 +75,8 @@ class WeatherService:
         }
         result = WeatherService.client.search(index=WeatherService.index_name, body=query)
         res = {
-
             "average_rain": result["aggregations"]["average_rain"]["value"]
         }
-
         return res
 
     @staticmethod

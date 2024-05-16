@@ -40,12 +40,11 @@ class SuburbService:
         }
         result = SuburbService.client.search(index=SuburbService.index_name, body=query)
         suburb = result["hits"]["hits"]
-        if len(suburb) == 0:
-            return None
-        else:
+        res = None
+        if len(suburb) > 0:
             res = {
                 "suburb_name": suburb[0]["_source"]["Official Name Local Government Area"],
                 "lga_code": suburb[0]["_source"]["Official Code Local Government Area"],
                 "geo_point": suburb[0]["_source"]["Geo Point"]
             }
-            return res
+        return res
