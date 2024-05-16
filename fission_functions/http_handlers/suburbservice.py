@@ -14,6 +14,7 @@ class SuburbService:
     @staticmethod
     def get_all_suburbs():
         query = {
+            "size": 100,
             "query": {
                 "match_all": {}
             }
