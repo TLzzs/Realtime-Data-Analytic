@@ -1,4 +1,4 @@
-curl -XPUT -k 'https://127.0.0.1:9200/observations' \
+curl -XPUT -k 'https://127.0.0.1:9200/air_quality' \
    --user 'elastic:elastic' \
    --header 'Content-Type: application/json' \
    --data '{

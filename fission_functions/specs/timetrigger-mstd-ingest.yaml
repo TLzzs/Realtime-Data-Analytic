@@ -1,0 +1,11 @@
+apiVersion: fission.io/v1
+kind: TimeTrigger
+metadata:
+  creationTimestamp: null
+  name: mstd-ingest
+spec:
+  cron: '@every 120m'
+  functionref:
+    functionweights: null
+    name: mstdpostextract
+    type: name
