@@ -8,20 +8,32 @@ class CrimeService:
         basic_auth=('elastic', 'elastic')
     )
 
-    @staticmethod
-    def place_holder():
-        return "place holder"
+    index_name = "sudo_crime"
 
     @staticmethod
-    def get_crime_by_suburb(suburb_name):
+    def get_all_crimes():
+        query = {
+            "query": {
+                "match_all": {}
+            }
+        }
+        result = CrimeService.client.search(index=CrimeService.index_name, body=query)
+        crimes = result["hits"]["hits"]
+
+        return crimes
+
+    @staticmethod
+    def get_crime_by_suburb(lga_code):
         query = {
             "query": {
                 "match": {
-                    "suburb_name": suburb_name
+                    "lga_code11": lga_code
                 }
             }
         }
-        result = CrimeService.client.search(index="crime_test", body=query)
+        result = CrimeService.client.search(index=CrimeService.index_name, body=query)
+        if len(result["hits"]["hits"]) == 0:
+            return None
         crime = result["hits"]["hits"][0]['_source']
         total_a_offences = crime["total_division_a_offences"]
         total_b_offences = crime["total_division_b_offences"]
