@@ -1,0 +1,22 @@
+apiVersion: fission.io/v1
+kind: HTTPTrigger
+metadata:
+  creationTimestamp: null
+  name: getsuburbcrimeandweather
+spec:
+  createingress: false
+  functionref:
+    functionweights: null
+    name: getsuburbcrimeandweather
+    type: name
+  host: ""
+  ingressconfig:
+    annotations: null
+    host: '*'
+    path: /api/{suburb}/crime-weather
+    tls: ""
+  method: ""
+  methods:
+  - GET
+  prefix: ""
+  relativeurl: /api/{suburb}/crime-weather
