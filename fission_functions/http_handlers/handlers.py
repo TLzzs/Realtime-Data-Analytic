@@ -35,9 +35,13 @@ def get_suburb_crime_and_weather():
     return jsonify(crime_weather)
 
 
+
 def compare_sentiment_and_crime():
-    year = int(request.headers.get("X-Fission-Params-Year"))
+    year = int(request.args.get("X-Fission-Params-Year"))
+    print(f"Year: {year}")
     result = SentimentService.compare_sentiment_and_crime(year)
+    print(f"Result: {result}")
     return jsonify(result)
+
 
 

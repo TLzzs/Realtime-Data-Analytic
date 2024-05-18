@@ -59,15 +59,18 @@ class SentimentService:
                     content = item["_source"]['content']
                     soup = BeautifulSoup(content, 'html.parser')
                     content = soup.get_text()
+                    print(f"The appended content is {content}")
                     filtered_data.append(content)
             except ValueError:
                 continue  # Skip if the ID cannot be converted to an integer
+            print(f"the data number after filter is: {len(filtered_data)}")
         return filtered_data
 
     @staticmethod
     def analyze_sentiment(content):
         blob = TextBlob(content)
         polarity = blob.sentiment.polarity
+        print(f"The polarity score is: {polarity}")
         if polarity > 0:
             return "positive"
         elif polarity < 0:
@@ -92,7 +95,7 @@ class SentimentService:
     @staticmethod
     def compare_sentiment_and_crime(year):
         data_raw = SentimentService.fetch_social_data()
-        filtered_data = SentimentService.filter_by_id_type(data_raw, year)
+        filtered_data = SentimentService.filter_by_year(data_raw, year)
         sentiment_counts = SentimentService.sentiment_counts(filtered_data)
         total_crimes = SentimentService.get_crime_data(year)
         result = {

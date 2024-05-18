@@ -1,4 +1,5 @@
 elasticsearch8==8.11.0
 elasticsearch
-bs4
-textbolb
+bs4==0.0.2
+textblob==0.15.3
+beautifulsoup4==4.11.1
