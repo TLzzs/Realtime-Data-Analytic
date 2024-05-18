@@ -36,8 +36,6 @@ def plot_map(map_type,highlight_suburbs):
     plt.suptitle(map_title, y=0.82, fontsize=10, fontweight='bold')
     plt.tight_layout()
     plt.show()
-    return None
-
 
 # ---------------------
 # Plot Scatterplot
@@ -74,8 +72,6 @@ def plot_scatter_chart(scatter_type,data):
     plt.ylabel('Number of Criminal Incidents',fontweight='bold')
     plt.xlim(df['feature_data'].min() - 0.4, df['feature_data'].max() + 0.4)
     plt.show()
-    return None
-
 
 # ---------------------
 # Plot Bar Chart
@@ -123,8 +119,6 @@ def plot_bar_chart(bar_type,data):
     ax1.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.show()
-    return None
-
 
 # ---------------------
 # Plot Pie Chart
@@ -149,4 +143,3 @@ def plot_pie_chart(pie_data):
     plt.suptitle('Sentiment Analysis vs. Number of Crimes (VIC)',fontweight='bold',fontsize=10)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
-    return None
