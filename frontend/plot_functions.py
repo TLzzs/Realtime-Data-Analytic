@@ -65,7 +65,6 @@ def plot_scatter_chart(scatter_type,data):
         plt.text(df.feature_data[line], df.count_data[line], 
             df.suburbs[line], horizontalalignment='center', verticalalignment='bottom',
             size='small', color='black')
-
     # Plot with title, xlabel and ylabel
     plt.title(scatter_annotations['title'][scatter_type],fontweight='bold',fontsize=10)
     plt.xlabel(scatter_annotations['xlabel'][scatter_type],fontweight='bold')
