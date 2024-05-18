@@ -57,14 +57,14 @@ def plot_scatter_chart(scatter_type,data):
 
     # Create Scatter Plot
     plt.figure(figsize=(8, 4))
-    scatter_plot = sns.scatterplot(data=df, x='feature_data', y='count_data',color='orange')
+    sns.scatterplot(data=df, x='feature_data', y='count_data',color='orange')
     # Add Trend Line
     sns.regplot(data=df, x='feature_data', y='count_data', scatter=False, color='orange')
     # Add annotations for each suburb
     for line in range(0, df.shape[0]):
         plt.text(df.feature_data[line], df.count_data[line], 
-                df.suburbs[line], horizontalalignment='center', verticalalignment='bottom',
-                size='small', color='black')
+            df.suburbs[line], horizontalalignment='center', verticalalignment='bottom',
+            size='small', color='black')
 
     # Plot with title, xlabel and ylabel
     plt.title(scatter_annotations['title'][scatter_type],fontweight='bold',fontsize=10)
