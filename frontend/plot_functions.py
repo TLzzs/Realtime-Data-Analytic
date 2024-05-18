@@ -9,7 +9,7 @@ import numpy as np
 # ---------------------
 
 map_titles = {
-    'crime':'Top 10 Suburbs with Highest Annual Crime Incidence Count (VIC)',
+    'crime':'Top 10 Suburbs with Highest Crimes (VIC)',
     'temp':'Top 10 Suburbs with Highest Annual Temperature (VIC)',
     'precip':'Top 10 Suburbs with Highest Annual Precipitation (VIC)'
 }
@@ -42,26 +42,26 @@ def plot_map(map_type,highlight_suburbs):
 
 scatter_annotations = {
     'title': {
-        'temp':'Temperature vs. Number of Criminal Incidents (VIC)',
-        'precip':'Precipitation vs. Number of Criminal Incidents (VIC)'
+        'average_temp':'Temperature vs. Number of Criminal Incidents (VIC)',
+        'average_rain':'Precipitation vs. Number of Criminal Incidents (VIC)'
     },
     'xlabel': {
-        'temp':'Annual Temperature (°C)',
-        'precip':'Annual Preciptation (mm)'
+        'average_temp':'Annual Temperature (°C)',
+        'average_rain':'Annual Preciptation (mm)'
     }
 }
 
 def plot_scatter_chart(scatter_type,data):
     # Extracting data
-    feature_data = [entry['feature_data'] for entry in data]
-    count_data = [entry['crime_count'] for entry in data]
-    suburbs = [entry['suburb'] for entry in data]
+    feature_data = [entry[scatter_type] for entry in data]
+    count_data = [entry['total_offences'] for entry in data]
+    suburbs = [entry['suburb_name'] for entry in data]
 
     # Create Scatter Plot
     plt.figure(figsize=(8, 4))
     plt.scatter(feature_data, count_data, color='orange')
 
-    # Add Trend Line
+    # # Add Trend Line
     sns.regplot(x=feature_data, y=count_data, scatter=False, color='orange')
 
     # Add annotations for each suburb
@@ -71,9 +71,16 @@ def plot_scatter_chart(scatter_type,data):
     # Plot with title, xlabel, and ylabel
     plt.title(scatter_annotations['title'][scatter_type], fontweight='bold', fontsize=10)
     plt.xlabel(scatter_annotations['xlabel'][scatter_type], fontweight='bold')
-    plt.ylabel('Number of Criminal Incidents', fontweight='bold')
+    plt.ylabel('Number of Crimes', fontweight='bold')
 
-    plt.xlim(min(feature_data) - 0.4, max(feature_data) + 0.4)
+    # Dynamically adjust limits
+    x_range = max(feature_data) - min(feature_data)
+    y_range = max(count_data) - min(count_data)
+    x_padding = 0.1 * x_range
+    y_padding = 0.1 * y_range
+
+    plt.xlim(min(feature_data) - x_padding, max(feature_data) + x_padding)
+    plt.ylim(min(count_data) - y_padding, max(count_data) + y_padding)
     plt.show()
 
 # ---------------------
@@ -82,44 +89,68 @@ def plot_scatter_chart(scatter_type,data):
 
 bar_annotations = {
     'title': {
-        'temp':'Crime Types vs. Temperature by Suburb (VIC)',
-        'precip':'Crime Types vs. Precipitation by Suburb (VIC)'
+        'average_temp':'vs. Temperature by Suburb (VIC)',
+        'average_rain':'vs. Precipitation by Suburb (VIC)'
     },
     'ylabel': {
-        'temp':'Annual Temperature (°C)',
-        'precip':'Annual Preciptation (mm)'
+        'average_temp':'Annual Temperature (°C)',
+        'average_rain':'Annual Preciptation (mm)'
     },
     'plotlabel': {
-        'temp':'Temperature',
-        'precip':'Preciptation'
+        'average_temp':'Temperature',
+        'average_rain':'Preciptation'
     }
 }
 
-def plot_bar_chart(bar_type,data):
+def plot_bar_chart(bar_type, data):
+    # Extracting data
+    suburbs = [entry['suburb_name'] for entry in data]
+    total_a_offences = [entry['total_a_offences'] for entry in data]
+    total_d_offences = [entry['total_d_offences'] for entry in data]
+    feature_data = [entry[bar_type] for entry in data] # temperature or rain
+
     # Set up the data for plotting
-    x = np.arange(len(data['suburbs']))
-    bar_width = 0.2
-    _, ax1 = plt.subplots()
+    x = np.arange(len(suburbs))
+    bar_width = 0.35
+    
+    # Increase the figure width
+    plt.figure(figsize=(12, 6))  # Adjust the width and height as needed
 
-    # Crime bars
-    ax1.bar(x - bar_width/2, data['type_a'], bar_width, label='Type A Crime', color='#ADD8E6', edgecolor='grey')
-    ax1.bar(x + bar_width/2, data['type_d'], bar_width, label='Type D Crime', color='#F08080', edgecolor='grey')
+    # Adjusting the position of x for Type D Crime
 
-    # Temperature line plot
-    ax2 = ax1.twinx()
-    ax2.plot(x, data[bar_type], color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
 
-    # Adding labels and title
-    ax1.set_xlabel('Suburb',fontweight='bold')
-    ax1.set_ylabel('Number of Crimes',fontweight='bold')
+    # Subplot for Type A Crime
+    plt.subplot(1, 2, 1)
+    plt.bar(x, total_a_offences, bar_width, label='Type A Crime', color='#ADD8E6', edgecolor='grey')
+    plt.xlabel('Suburb',fontweight='bold')
+    plt.ylabel('Number of Crimes',fontweight='bold')
+    plt.title('Number of Type A Crimes {}'.format(bar_annotations['title'][bar_type]), fontsize=10, fontweight='bold')
+    plt.xticks(x, suburbs, rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.legend(loc='upper left')
+
+    # Temperature line plot for Type A Crime
+    ax2 = plt.gca().twinx()
+    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
-    ax1.set_title(bar_annotations['title'][bar_type], fontsize=10, fontweight='bold')
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(data['suburbs'])
-    ax1.legend(loc='upper left')
     ax2.legend(loc='upper right')
 
-    ax1.grid(axis='y', linestyle='--', alpha=0.7)
+    # Subplot for Type D Crime
+    plt.subplot(1, 2, 2)
+    plt.bar(x, total_d_offences, bar_width, label='Type D Crime', color='#F08080', edgecolor='grey')
+    plt.xlabel('Suburb',fontweight='bold')
+    plt.ylabel('Number of Crimes',fontweight='bold')
+    plt.title('Number of Type D Crimes {}'.format(bar_annotations['title'][bar_type]), fontsize=10, fontweight='bold')
+    plt.xticks(x, suburbs, rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.legend(loc='upper left')
+
+    # Temperature line plot for Type D Crime
+    ax2 = plt.gca().twinx()
+    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
+    ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
+    ax2.legend(loc='upper right')
+
     plt.tight_layout()
     plt.show()
 
