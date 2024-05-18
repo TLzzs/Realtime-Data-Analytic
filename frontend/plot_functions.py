@@ -53,21 +53,28 @@ scatter_annotations = {
 }
 
 def plot_scatter_chart(scatter_type,data):
-    df = pd.DataFrame(data)
+    # Extracting data
+    feature_data = [entry['feature_data'] for entry in data]
+    count_data = [entry['crime_count'] for entry in data]
+    suburbs = [entry['suburb'] for entry in data]
 
     # Create Scatter Plot
     plt.figure(figsize=(8, 4))
-    sns.scatterplot(data=df, x='feature_data', y='count_data',color='orange')
+    plt.scatter(feature_data, count_data, color='orange')
+
     # Add Trend Line
-    sns.regplot(data=df, x='feature_data', y='count_data', scatter=False, color='orange')
+    sns.regplot(x=feature_data, y=count_data, scatter=False, color='orange')
+
     # Add annotations for each suburb
-    for line in range(0, df.shape[0]):
-        plt.text(df.feature_data[line], df.count_data[line],df.suburbs[line],horizontalalignment='center',verticalalignment='bottom',size='small', color='black')
-    # Plot with title, xlabel and ylabel
-    plt.title(scatter_annotations['title'][scatter_type],fontweight='bold',fontsize=10)
-    plt.xlabel(scatter_annotations['xlabel'][scatter_type],fontweight='bold')
-    plt.ylabel('Number of Criminal Incidents',fontweight='bold')
-    plt.xlim(df['feature_data'].min() - 0.4, df['feature_data'].max() + 0.4)
+    for i, suburb in enumerate(suburbs):
+        plt.text(feature_data[i], count_data[i], suburb, horizontalalignment='center', verticalalignment='bottom', size='small')
+
+    # Plot with title, xlabel, and ylabel
+    plt.title(scatter_annotations['title'][scatter_type], fontweight='bold', fontsize=10)
+    plt.xlabel(scatter_annotations['xlabel'][scatter_type], fontweight='bold')
+    plt.ylabel('Number of Criminal Incidents', fontweight='bold')
+
+    plt.xlim(min(feature_data) - 0.4, max(feature_data) + 0.4)
     plt.show()
 
 # ---------------------
