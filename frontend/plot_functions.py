@@ -1,4 +1,3 @@
-import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
@@ -67,7 +66,8 @@ def plot_scatter_chart(scatter_type,data):
 
     # Add annotations for each suburb
     for i, suburb in enumerate(suburbs):
-        plt.text(feature_data[i], count_data[i], suburb, horizontalalignment='center', verticalalignment='bottom', size='small')
+        plt.text(feature_data[i], count_data[i], suburb, 
+                 horizontalalignment='center', verticalalignment='bottom', size='small')
 
     # Plot with title, xlabel, and ylabel
     plt.title(scatter_annotations['title'][scatter_type], fontweight='bold', fontsize=10)
@@ -100,7 +100,7 @@ def plot_bar_chart(bar_type,data):
     # Set up the data for plotting
     x = np.arange(len(data['suburbs']))
     bar_width = 0.2
-    fig, ax1 = plt.subplots()
+    _, ax1 = plt.subplots()
 
     # Crime bars
     ax1.bar(x - bar_width/2, data['type_a'], bar_width, label='Type A Crime', color='#ADD8E6', edgecolor='grey')
@@ -134,16 +134,15 @@ colors = ['#ADD8E6', '#90EE90', '#F08080']
 def plot_pie_chart(pie_data):
     years = list(pie_data.keys())
     plt.figure(figsize=(8, 4))
-    for i in range(len(years)):
-        cur_year = years[i]
-        plt.subplot(1,len(years),i+1)
+    for i, cur_year in enumerate(years):
+        plt.subplot(1, len(years), i + 1)
         plt.pie(pie_data[cur_year]['counts'], labels=sentiments, autopct='%1.1f%%', startangle=90, colors=colors)
         plt.gca().set_aspect('equal')
-        title = 'Year' + cur_year
-        plt.title(title,fontweight='semibold',fontsize=10)
-        xlabel = 'Number of Crimes = ' + str(pie_data[cur_year]['crime_count'])
-        plt.xlabel(xlabel,fontsize=10)
+        title = f'Year {cur_year}'  # Using f-string for string formatting
+        plt.title(title, fontweight='semibold', fontsize=10)
+        xlabel = f'Number of Crimes = {pie_data[cur_year]["crime_count"]}'  # Using f-string for string formatting
+        plt.xlabel(xlabel, fontsize=10)
 
-    plt.suptitle('Sentiment Analysis vs. Number of Crimes (VIC)',fontweight='bold',fontsize=10)
+    plt.suptitle('Sentiment Analysis vs. Number of Crimes (VIC)', fontweight='bold', fontsize=10)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
