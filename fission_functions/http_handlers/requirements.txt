@@ -1,2 +1,4 @@
 elasticsearch8==8.11.0
 elasticsearch
+bs4
+textbolb
