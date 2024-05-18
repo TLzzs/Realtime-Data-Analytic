@@ -66,8 +66,7 @@ def plot_scatter_chart(scatter_type,data):
 
     # Add annotations for each suburb
     for i, suburb in enumerate(suburbs):
-        plt.text(feature_data[i], count_data[i], suburb, 
-                 horizontalalignment='center', verticalalignment='bottom', size='small')
+        plt.text(feature_data[i], count_data[i], suburb, ha='center', va='bottom', size='small')
 
     # Plot with title, xlabel, and ylabel
     plt.title(scatter_annotations['title'][scatter_type], fontweight='bold', fontsize=10)
