@@ -112,12 +112,9 @@ def plot_bar_chart(bar_type, data):
     # Set up the data for plotting
     x = np.arange(len(suburbs))
     bar_width = 0.35
-    
+
     # Increase the figure width
     plt.figure(figsize=(12, 6))  # Adjust the width and height as needed
-
-    # Adjusting the position of x for Type D Crime
-
 
     # Subplot for Type A Crime
     plt.subplot(1, 2, 1)
