@@ -48,7 +48,7 @@ class CrimeService:
                 [total_a_offences, total_b_offences, total_c_offences, total_d_offences, total_e_offences,
                  total_f_offences]),
             "total_a_offences": total_a_offences,
-            "total_d_offences": total_d_offences
+            "total_b_offences": total_b_offences
         }
 
         return res
