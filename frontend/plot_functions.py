@@ -93,8 +93,8 @@ bar_annotations = {
         'average_rain':'vs. Precipitation by Suburb (VIC)'
     },
     'ylabel': {
-        'average_temp':'Annual Temperature (°C)',
-        'average_rain':'Annual Preciptation (mm)'
+        'average_temp':'Annual Avg Temperature (°C)',
+        'average_rain':'Annual Avg Preciptation (mm)'
     },
     'plotlabel': {
         'average_temp':'Temperature',
@@ -106,7 +106,7 @@ def plot_bar_chart(bar_type, data):
     # Extracting data
     suburbs = [entry['suburb_name'] for entry in data]
     total_a_offences = [entry['total_a_offences'] for entry in data]
-    total_d_offences = [entry['total_d_offences'] for entry in data]
+    total_b_offences = [entry['total_b_offences'] for entry in data]
     feature_data = [entry[bar_type] for entry in data] # temperature or rain
 
     # Set up the data for plotting
@@ -121,7 +121,7 @@ def plot_bar_chart(bar_type, data):
     plt.bar(x, total_a_offences, bar_width, label='Type A Crime', color='#ADD8E6', edgecolor='grey')
     plt.xlabel('Suburb',fontweight='bold')
     plt.ylabel('Number of Crimes',fontweight='bold')
-    plt.title(f"'Number of Type A Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
+    plt.title(f"Number of Type A Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
     plt.xticks(x, suburbs, rotation=45)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
@@ -132,17 +132,17 @@ def plot_bar_chart(bar_type, data):
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
     ax2.legend(loc='upper right')
 
-    # Subplot for Type D Crime
+    # Subplot for Type B Crime
     plt.subplot(1, 2, 2)
-    plt.bar(x, total_d_offences, bar_width, label='Type D Crime', color='#F08080', edgecolor='grey')
+    plt.bar(x, total_b_offences, bar_width, label='Type B Crime', color='#F08080', edgecolor='grey')
     plt.xlabel('Suburb',fontweight='bold')
     plt.ylabel('Number of Crimes',fontweight='bold')
-    plt.title(f"'Number of Type D Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
+    plt.title(f"Number of Type B Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
     plt.xticks(x, suburbs, rotation=45)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
 
-    # Temperature/Precipitation line plot for Type D Crime
+    # Temperature/Precipitation line plot for Type B Crime
     ax2 = plt.gca().twinx()
     ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
