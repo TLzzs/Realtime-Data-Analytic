@@ -42,5 +42,3 @@ def compare_sentiment_and_crime():
     year = int(request.headers.get("X-Fission-Params-Year"))
     result = SentimentService.compare_sentiment_and_crime(year)
     return jsonify(result)
-
-
