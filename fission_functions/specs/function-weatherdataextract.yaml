@@ -8,7 +8,7 @@ spec:
     ExecutionStrategy:
       ExecutorType: poolmgr
       MaxScale: 0
-      MinScale: 0
+      MinScale: 3
       SpecializationTimeout: 120
       TargetCPUPercent: 0
     StrategyType: execution
