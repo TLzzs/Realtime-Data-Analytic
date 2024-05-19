@@ -114,7 +114,7 @@ def plot_bar_chart(bar_type, data):
     bar_width = 0.35
 
     # Increase the figure width
-    plt.figure(figsize=(12, 6))  # Adjust the width and height as needed
+    plt.figure(figsize=(12, 6))
 
     # Subplot for Type A Crime
     plt.subplot(1, 2, 1)
@@ -126,7 +126,7 @@ def plot_bar_chart(bar_type, data):
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
 
-    # Temperature line plot for Type A Crime
+    # Temperature/Precipitation line plot for Type A Crime
     ax2 = plt.gca().twinx()
     ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
@@ -142,7 +142,7 @@ def plot_bar_chart(bar_type, data):
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
 
-    # Temperature line plot for Type D Crime
+    # Temperature/Precipitation line plot for Type D Crime
     ax2 = plt.gca().twinx()
     ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
@@ -155,21 +155,18 @@ def plot_bar_chart(bar_type, data):
 # Plot Pie Chart
 # ---------------------
 
-sentiments = ['Positive', 'Neutral', 'Negative']
-colors = ['#ADD8E6', '#90EE90', '#F08080']
+sentiments = ['Negative','Neutral','Positive']
+colors = ['#F08080','#90EE90','#ADD8E6']
 
-def plot_pie_chart(pie_data):
-    years = list(pie_data.keys())
+def plot_pie_chart(data):
     plt.figure(figsize=(8, 4))
-    for i, cur_year in enumerate(years):
-        plt.subplot(1, len(years), i + 1)
-        plt.pie(pie_data[cur_year]['counts'], labels=sentiments, autopct='%1.1f%%', startangle=90, colors=colors)
+    for i, year_data in enumerate(data):
+        plt.subplot(1, len(data), i + 1)
+        plt.pie(year_data['sentiment_counts'].values(),labels=sentiments,autopct='%1.1f%%',startangle=90, colors=colors)
         plt.gca().set_aspect('equal')
-        title = f'Year {cur_year}'  # Using f-string for string formatting
-        plt.title(title, fontweight='semibold', fontsize=10)
-        xlabel = f'Number of Crimes = {pie_data[cur_year]["crime_count"]}'  # Using f-string for string formatting
-        plt.xlabel(xlabel, fontsize=10)
+        plt.title(f"Year {year_data['year']}",fontweight='semibold',fontsize=10)
+        plt.xlabel(f"Number of Crimes = {year_data['total_crimes']}",fontweight='semibold',fontsize=10)
 
-    plt.suptitle('Sentiment Analysis vs. Number of Crimes (VIC)', fontweight='bold', fontsize=10)
+    plt.suptitle('Sentiment Percentage vs. Number of Crimes (VIC)', fontweight='bold', fontsize=10)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
