@@ -4,6 +4,8 @@ from weatherservice import WeatherService
 from suburbservice import SuburbService
 from sentimentservice import SentimentService
 
+
+
 def get_all_suburbs():
     suburbs = SuburbService.get_all_suburbs()
     return jsonify(suburbs)
@@ -37,11 +39,8 @@ def get_suburb_crime_and_weather():
 
 
 def compare_sentiment_and_crime():
-    year = int(request.args.get("X-Fission-Params-Year"))
-    print(f"Year: {year}")
+    year = int(request.headers.get("X-Fission-Params-Year"))
     result = SentimentService.compare_sentiment_and_crime(year)
-    print(f"Result: {result}")
     return jsonify(result)
-
 
 

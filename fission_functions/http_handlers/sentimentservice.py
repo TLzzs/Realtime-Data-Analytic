@@ -2,6 +2,7 @@ from elasticsearch import Elasticsearch
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 
+
 class SentimentService:
     client = Elasticsearch(
         'https://elasticsearch-master.elastic.svc.cluster.local:9200',
@@ -15,12 +16,32 @@ class SentimentService:
     @staticmethod
     def fetch_social_data():
         query = {
-            "query": {
-                "match_all": {}
+        "query": {
+            "match_all": {}
             }
         }
-        result = SentimentService.client.search(index=SentimentService.social_index, body=query)
-        return result['hits']['hits']
+    
+        # Initialize the scroll
+        result = SentimentService.client.search(
+            index=SentimentService.social_index,
+            body=query,
+            scroll='2m',  # Keep the search context alive for 2 minutes
+            size=1000  # Number of documents per batch
+        )
+        
+        all_hits = []
+        while True:
+            # Get the scroll ID and hits
+            scroll_id = result['_scroll_id']
+            hits = result['hits']['hits']
+            if not hits:
+                break
+            all_hits.extend(hits)
+            
+            # Fetch the next batch of results
+            result = SentimentService.client.scroll(scroll_id=scroll_id, scroll='2m')
+        
+        return all_hits
     
     @staticmethod
     def fetch_crime_data(year):
@@ -38,7 +59,8 @@ class SentimentService:
                         }
                     ]
                 }
-            }
+            },
+            "size": 1000
         }
         result = SentimentService.client.search(index=SentimentService.crime_index, body=query)
         return result['hits']['hits']
@@ -49,7 +71,7 @@ class SentimentService:
         for item in data:
             # Assuming the ID is numeric and can be converted to an integer
             try:
-                id_numeric = int(item['_id'])
+                id_numeric = int(item["_source"]['id'])
                 if id_type % 2 == 0 and id_numeric % 2 == 0:
                     content = item["_source"]['content']
                     soup = BeautifulSoup(content, 'html.parser')
@@ -59,18 +81,15 @@ class SentimentService:
                     content = item["_source"]['content']
                     soup = BeautifulSoup(content, 'html.parser')
                     content = soup.get_text()
-                    print(f"The appended content is {content}")
                     filtered_data.append(content)
             except ValueError:
                 continue  # Skip if the ID cannot be converted to an integer
-            print(f"the data number after filter is: {len(filtered_data)}")
         return filtered_data
 
     @staticmethod
     def analyze_sentiment(content):
         blob = TextBlob(content)
         polarity = blob.sentiment.polarity
-        print(f"The polarity score is: {polarity}")
         if polarity > 0:
             return "positive"
         elif polarity < 0:
@@ -89,8 +108,17 @@ class SentimentService:
     @staticmethod
     def get_crime_data(year):
         crime_data = SentimentService.fetch_crime_data(year)
-        total_crimes = len(crime_data)
-        return total_crimes
+        total = 0
+        for item in crime_data:
+            crime = item["_source"]
+            a = int(crime.get("total_division_a_offences", 0))  # Use get() to avoid KeyError
+            b = int(crime.get("total_division_b_offences", 0))
+            c = int(crime.get("total_division_c_offences", 0))
+            d = int(crime.get("total_division_d_offences", 0))
+            e = int(crime.get("total_division_e_offences", 0))
+            f = int(crime.get("total_division_f_offences", 0))
+            total += sum([a,b,c,d,e,f])
+        return total
     
     @staticmethod
     def compare_sentiment_and_crime(year):
