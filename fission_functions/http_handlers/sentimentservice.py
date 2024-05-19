@@ -2,7 +2,6 @@ from elasticsearch import Elasticsearch
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 
-
 class SentimentService:
     client = Elasticsearch(
         'https://elasticsearch-master.elastic.svc.cluster.local:9200',
@@ -11,7 +10,7 @@ class SentimentService:
     )
 
     social_index = "mstd_social_tag_data"
-    crime_index = "sudo_crime" 
+    crime_index = "sudo_crime"
 
     @staticmethod
     def fetch_social_data():
@@ -20,7 +19,7 @@ class SentimentService:
             "match_all": {}
             }
         }
-    
+
         # Initialize the scroll
         result = SentimentService.client.search(
             index=SentimentService.social_index,
@@ -28,7 +27,7 @@ class SentimentService:
             scroll='2m',  # Keep the search context alive for 2 minutes
             size=1000  # Number of documents per batch
         )
-        
+
         all_hits = []
         while True:
             # Get the scroll ID and hits
@@ -37,12 +36,12 @@ class SentimentService:
             if not hits:
                 break
             all_hits.extend(hits)
-            
+
             # Fetch the next batch of results
             result = SentimentService.client.scroll(scroll_id=scroll_id, scroll='2m')
-        
+
         return all_hits
-    
+
     @staticmethod
     def fetch_crime_data(year):
         query = {
@@ -92,10 +91,9 @@ class SentimentService:
         polarity = blob.sentiment.polarity
         if polarity > 0:
             return "positive"
-        elif polarity < 0:
+        if polarity < 0:
             return "negative"
-        else:
-            return "neutral"
+        return "neutral"
 
     @staticmethod
     def sentiment_counts(data):
@@ -104,7 +102,7 @@ class SentimentService:
             sentiment = SentimentService.analyze_sentiment(content)
             sentiment_counts[sentiment] += 1
         return sentiment_counts
-    
+
     @staticmethod
     def get_crime_data(year):
         crime_data = SentimentService.fetch_crime_data(year)
@@ -119,7 +117,7 @@ class SentimentService:
             f = int(crime.get("total_division_f_offences", 0))
             total += sum([a,b,c,d,e,f])
         return total
-    
+
     @staticmethod
     def compare_sentiment_and_crime(year):
         data_raw = SentimentService.fetch_social_data()
@@ -132,6 +130,3 @@ class SentimentService:
             "total_crimes": total_crimes
         }
         return result
-
-
-
