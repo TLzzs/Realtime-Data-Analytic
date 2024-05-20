@@ -42,12 +42,12 @@ def plot_map(map_type,highlight_suburbs):
 
 scatter_annotations = {
     'title': {
-        'average_temp':'Temperature vs. Number of Criminal Incidents (VIC)',
-        'average_rain':'Precipitation vs. Number of Criminal Incidents (VIC)'
+        'average_temp':'Temperature vs. Crime in High-Crime Victoria Suburbs',
+        'average_rain':'Precipitation vs. Crime in High-Crime Victoria Suburbs'
     },
     'xlabel': {
-        'average_temp':'Annual Temperature (°C)',
-        'average_rain':'Annual Preciptation (mm)'
+        'average_temp':'Annual Average Temperature (°C)',
+        'average_rain':'Annual Average Preciptation (cm)'
     }
 }
 
@@ -58,10 +58,10 @@ def plot_scatter_chart(scatter_type,data):
     suburbs = [entry['suburb_name'] for entry in data]
 
     # Create Scatter Plot
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(10, 5))
     plt.scatter(feature_data, count_data, color='orange')
 
-    # # Add Trend Line
+    # Add Trend Line
     sns.regplot(x=feature_data, y=count_data, scatter=False, color='orange')
 
     # Add annotations for each suburb
@@ -89,16 +89,12 @@ def plot_scatter_chart(scatter_type,data):
 
 bar_annotations = {
     'title': {
-        'average_temp':'vs. Temperature by Suburb (VIC)',
-        'average_rain':'vs. Precipitation by Suburb (VIC)'
-    },
-    'ylabel': {
-        'average_temp':'Annual Avg Temperature (°C)',
-        'average_rain':'Annual Avg Preciptation (mm)'
-    },
-    'plotlabel': {
         'average_temp':'Temperature',
         'average_rain':'Preciptation'
+    },
+    'ylabel': {
+        'average_temp':'Annual Average Temperature (°C)',
+        'average_rain':'Annual Average Preciptation (cm)'
     }
 }
 
@@ -119,35 +115,37 @@ def plot_bar_chart(bar_type, data):
     # Subplot for Type A Crime
     plt.subplot(1, 2, 1)
     plt.bar(x, total_a_offences, bar_width, label='Type A Crime', color='#ADD8E6', edgecolor='grey')
-    plt.xlabel('Suburb',fontweight='bold')
-    plt.ylabel('Number of Crimes',fontweight='bold')
-    plt.title(f"Number of Type A Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
+    plt.xlabel('Suburbs',fontweight='bold')
+    plt.ylabel('Number of Type A Crimes',fontweight='bold')
+    plt.title(f"Type A Crime (Crimes Against the Person)", fontsize=10, fontweight='bold')
     plt.xticks(x, suburbs, rotation=45)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
 
     # Temperature/Precipitation line plot for Type A Crime
     ax2 = plt.gca().twinx()
-    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
+    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['title'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
     ax2.legend(loc='upper right')
 
     # Subplot for Type B Crime
     plt.subplot(1, 2, 2)
     plt.bar(x, total_b_offences, bar_width, label='Type B Crime', color='#F08080', edgecolor='grey')
-    plt.xlabel('Suburb',fontweight='bold')
-    plt.ylabel('Number of Crimes',fontweight='bold')
-    plt.title(f"Number of Type B Crimes {bar_annotations['title'][bar_type]}", fontsize=10, fontweight='bold')
+    plt.xlabel('Suburbs',fontweight='bold')
+    plt.ylabel('Number of Type B Crimes',fontweight='bold')
+    plt.title(f"Type B Crime (Property and Deception Offences)", fontsize=10, fontweight='bold')
     plt.xticks(x, suburbs, rotation=45)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(loc='upper left')
 
     # Temperature/Precipitation line plot for Type B Crime
     ax2 = plt.gca().twinx()
-    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['plotlabel'][bar_type])
+    ax2.plot(x, feature_data, color='orange', marker='o', label=bar_annotations['title'][bar_type])
     ax2.set_ylabel(bar_annotations['ylabel'][bar_type],fontweight='bold')
     ax2.legend(loc='upper right')
 
+    suptitle = f"Different Types of Crimes vs. {bar_annotations['title'][bar_type]} in High-Crime Victoria Suburbs"
+    plt.suptitle(suptitle,fontweight='bold',fontsize=12)
     plt.tight_layout()
     plt.show()
 
@@ -167,6 +165,6 @@ def plot_pie_chart(data):
         plt.title(f"Year {year_data['year']}",fontweight='semibold',fontsize=10)
         plt.xlabel(f"Number of Crimes = {year_data['total_crimes']}",fontweight='semibold',fontsize=10)
 
-    plt.suptitle('Sentiment Percentage vs. Number of Crimes (VIC)', fontweight='bold', fontsize=10)
+    plt.suptitle('Sentiment Percentage vs. Crime in Victoria', fontweight='bold', fontsize=10)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
