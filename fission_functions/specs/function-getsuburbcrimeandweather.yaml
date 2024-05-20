@@ -13,7 +13,7 @@ spec:
     functionName: handlers.get_suburb_crime_and_weather
   InvokeStrategy:
     ExecutionStrategy:
-      ExecutorType: poolmgr
+      ExecutorType: newdeploy
       MinScale: 3
       MaxScale: 3  # Set a non-zero MaxScale for autoscaling
       SpecializationTimeout: 120

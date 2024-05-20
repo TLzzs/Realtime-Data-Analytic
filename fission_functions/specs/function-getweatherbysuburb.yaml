@@ -6,8 +6,8 @@ metadata:
 spec:
   InvokeStrategy:
     ExecutionStrategy:
-      ExecutorType: poolmgr
-      MaxScale: 0
+      ExecutorType: newdeploy
+      MaxScale: 3
       MinScale: 3
       SpecializationTimeout: 120
       TargetCPUPercent: 0
@@ -24,4 +24,10 @@ spec:
       name: httphandlers
       namespace: ""
   requestsPerPod: 1
-  resources: {}
+  resources: 
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"

@@ -6,7 +6,7 @@ metadata:
 spec:
   InvokeStrategy:
     ExecutionStrategy:
-      ExecutorType: poolmgr
+      ExecutorType: newdeploy
       MaxScale: 3
       MinScale: 3
       SpecializationTimeout: 120
