@@ -16,7 +16,7 @@ def get_latest_record_time(client, station_id):
     """Retrieve the latest record's time from the Elasticsearch index for a specific station."""
     query = {
         "size": 1,
-        "query": {"term": {"station_id.keyword": station_id}},
+        "query": {"term": {"station_id": station_id}},
         "sort": [{"local_date_time_full": {"order": "desc"}}],
         "_source": ["local_date_time_full"]
     }

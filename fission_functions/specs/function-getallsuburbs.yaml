@@ -7,7 +7,7 @@ spec:
   InvokeStrategy:
     ExecutionStrategy:
       ExecutorType: poolmgr
-      MaxScale: 0
+      MaxScale: 3
       MinScale: 3
       SpecializationTimeout: 120
       TargetCPUPercent: 0

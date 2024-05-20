@@ -1,7 +1,7 @@
 include:
 - ./weatherdataextract.zip
 kind: ArchiveUploadSpec
-name: weatherdataextract-zip-dLyP
+name: weatherdataextract-zip-VT8k
 
 ---
 apiVersion: fission.io/v1
@@ -19,7 +19,7 @@ spec:
   source:
     checksum: {}
     type: url
-    url: archive://weatherdataextract-zip-dLyP
+    url: archive://weatherdataextract-zip-VT8k
 status:
   buildstatus: pending
-  lastUpdateTimestamp: "2024-05-08T14:16:28Z"
+  lastUpdateTimestamp: "2024-05-19T15:12:30Z"

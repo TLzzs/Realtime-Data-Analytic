@@ -1,27 +1,32 @@
 apiVersion: fission.io/v1
 kind: Function
 metadata:
-  creationTimestamp: null
   name: getsuburbcrimeandweather
 spec:
+  environment:
+    name: python
+    namespace: default  # Specify the namespace if it's not the default one
+  package:
+    packageref:
+      name: httphandlers
+      namespace: default  # Specify the namespace if it's not the default one
+    functionName: handlers.get_suburb_crime_and_weather
   InvokeStrategy:
     ExecutionStrategy:
       ExecutorType: poolmgr
-      MaxScale: 0
       MinScale: 3
+      MaxScale: 3  # Set a non-zero MaxScale for autoscaling
       SpecializationTimeout: 120
-      TargetCPUPercent: 0
+      TargetCPUPercent: 80  # Adjust target CPU percent as necessary
+      KeepWarmContainer: true
     StrategyType: execution
-  concurrency: 500
-  environment:
-    name: python
-    namespace: ""
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
   functionTimeout: 60
   idletimeout: 120
-  package:
-    functionName: handlers.get_suburb_crime_and_weather
-    packageref:
-      name: httphandlers
-      namespace: ""
-  requestsPerPod: 1
-  resources: {}
+
