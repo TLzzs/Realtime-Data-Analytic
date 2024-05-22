@@ -27,7 +27,8 @@ def plot_map(map_type,highlight_suburbs):
     # Suppress the warning
     warnings.filterwarnings("ignore", message="Geometry is in a geographic CRS")
     warnings.filterwarnings("ignore", message="Legend does not support handles for PatchCollection instances.")
-    gdf['lga_name'] = gdf['lga_name'].apply(lambda x: ', '.join(x))
+    gdf['lga_name'] = gdf['lga_name'].str.join(', ')
+    # gdf['lga_name'] = gdf['lga_name'].apply(lambda x: ', '.join(x))
 
     # Group the GeoDataFrame by 'lga_name'
     grouped = gdf.groupby('lga_name')
