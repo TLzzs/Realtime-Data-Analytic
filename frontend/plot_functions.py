@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import seaborn as sns
 import numpy as np
+import warnings
 
 # ---------------------
 # Plot Map
@@ -16,24 +17,40 @@ map_titles = {
 
 gdf = gpd.read_file("../data/suburb-2-vic.geojson")
 
+map_titles = {
+    'crime':'Top 10 Suburbs with Highest Crimes in Victoria',
+    'temp':'Top 10 Suburbs with Highest Annual Temperature (VIC)',
+    'precip':'Top 10 Suburbs with Highest Annual Precipitation (VIC)'
+}
+
 def plot_map(map_type,highlight_suburbs):
     map_title = map_titles[map_type]
 
-    # Plot all suburbs
-    gdf.plot(color='#F8F8F8',edgecolor='lightgrey',linewidth=0.5,figsize=(8, 8))
+    gdf = gpd.read_file("../data/georef-australia-local-government-area@public.geojson")
+    # Suppress the warning
+    warnings.filterwarnings("ignore", message="Geometry is in a geographic CRS")
+    warnings.filterwarnings("ignore", message="Legend does not support handles for PatchCollection instances.")
+    gdf['lga_name'] = gdf['lga_name'].apply(lambda x: ', '.join(x))
 
-    # Plot highlighted suburbs
-    highlight_color = 'orange'
-    highlighted_gdf = gdf[gdf['vic_loca_2'].isin(highlight_suburbs)]
-    highlighted_gdf.plot(color=highlight_color, ax=plt.gca())
-    # Create legend for highlighted suburbs
-    legend_elements = [Patch(facecolor=highlight_color, label=suburb) for suburb in highlight_suburbs]
-    plt.legend(handles=legend_elements, loc='upper right', fontsize=9)
+    # Group the GeoDataFrame by 'lga_name'
+    grouped = gdf.groupby('lga_name')
+
+    # Plot all polygons on a single map with different colors for each group
+    _, ax = plt.subplots(figsize=(10, 8))
+
+    for i, (name, group) in enumerate(grouped):
+        if name in highlight_suburbs:
+            group.plot(ax=ax, label=name, color='orange')
+            centroid = group['geometry'].centroid.iloc[0]
+            ax.annotate(name, (centroid.x, centroid.y), fontsize=8, ha='center',color='gray')
+        else:
+            group.plot(ax=ax, label=name, color='#F8F8F8',edgecolor='lightgrey')
 
     # Plot with title
     plt.axis('off')
     plt.suptitle(map_title, y=0.82, fontsize=10, fontweight='bold')
     plt.tight_layout()
+    plt.legend()
     plt.show()
 
 # ---------------------
