@@ -35,7 +35,7 @@ def plot_map(map_type,highlight_suburbs):
     # Plot all polygons on a single map with different colors for each group
     _, ax = plt.subplots(figsize=(10, 8))
 
-    for i, (name, group) in enumerate(grouped):
+    for _, (name, group) in enumerate(grouped):
         if name in highlight_suburbs:
             group.plot(ax=ax, label=name, color='orange')
             centroid = group['geometry'].centroid.iloc[0]
