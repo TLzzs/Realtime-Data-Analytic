@@ -8,36 +8,18 @@ import numpy as np
 # Plot Map
 # ---------------------
 
-map_titles = {
-    'crime':'Top 10 Suburbs with Highest Crimes (VIC)',
-    'temp':'Top 10 Suburbs with Highest Annual Temperature (VIC)',
-    'precip':'Top 10 Suburbs with Highest Annual Precipitation (VIC)'
-}
+def plot_map(highlight_suburbs):
+    gdf = gpd.read_file("../data/georef-australia-local-government-area@public.geojson")
 
-gdf = gpd.read_file("../data/georef-australia-local-government-area@public.geojson")
-
-map_titles = {
-    'crime':'Top 10 Suburbs with Highest Crimes in Victoria',
-    'temp':'Top 10 Suburbs with Highest Annual Temperature (VIC)',
-    'precip':'Top 10 Suburbs with Highest Annual Precipitation (VIC)'
-}
-
-def plot_map(map_type,highlight_suburbs):
-    map_title = map_titles[map_type]
-    # Suppress the warning
-    warnings.filterwarnings("ignore", message="Geometry is in a geographic CRS")
-    warnings.filterwarnings("ignore", message="Legend does not support handles for PatchCollection instances.")
+    # All LGA area in GeoJson
     gdf['lga_name'] = gdf['lga_name'].str.join(', ')
-    # gdf['lga_name'] = gdf['lga_name'].apply(lambda x: ', '.join(x))
 
     # Group the GeoDataFrame by 'lga_name'
     grouped = gdf.groupby('lga_name')
-
-    # Plot all polygons on a single map with different colors for each group
     _, ax = plt.subplots(figsize=(10, 8))
-
     for _, (name, group) in enumerate(grouped):
         if name in highlight_suburbs:
+            warnings.filterwarnings("ignore", message="Geometry is in a geographic CRS")
             group.plot(ax=ax, label=name, color='orange')
             centroid = group['geometry'].centroid.iloc[0]
             ax.annotate(name, (centroid.x, centroid.y), fontsize=8, ha='center',color='gray')
@@ -46,9 +28,8 @@ def plot_map(map_type,highlight_suburbs):
 
     # Plot with title
     plt.axis('off')
-    plt.suptitle(map_title, y=0.82, fontsize=10, fontweight='bold')
+    plt.suptitle('Top 10 Suburbs with Highest Crimes in Victoria', y=0.82, fontsize=10, fontweight='bold')
     plt.tight_layout()
-    plt.legend()
     plt.show()
 
 # ---------------------
