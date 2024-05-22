@@ -1,9 +1,8 @@
+import warnings
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
 import seaborn as sns
 import numpy as np
-import warnings
 
 # ---------------------
 # Plot Map
@@ -15,7 +14,7 @@ map_titles = {
     'precip':'Top 10 Suburbs with Highest Annual Precipitation (VIC)'
 }
 
-gdf = gpd.read_file("../data/suburb-2-vic.geojson")
+gdf = gpd.read_file("../data/georef-australia-local-government-area@public.geojson")
 
 map_titles = {
     'crime':'Top 10 Suburbs with Highest Crimes in Victoria',
@@ -25,8 +24,6 @@ map_titles = {
 
 def plot_map(map_type,highlight_suburbs):
     map_title = map_titles[map_type]
-
-    gdf = gpd.read_file("../data/georef-australia-local-government-area@public.geojson")
     # Suppress the warning
     warnings.filterwarnings("ignore", message="Geometry is in a geographic CRS")
     warnings.filterwarnings("ignore", message="Legend does not support handles for PatchCollection instances.")
